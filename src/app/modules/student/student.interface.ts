@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import { Model, Types } from "mongoose";
 
 export type TUserName = {
   firstName: string;
@@ -25,20 +25,20 @@ export type TlocalGurdian = {
 // Student interface methods
 export type TStudent = {
   id: string;
+  user: Types.ObjectId;
   password: string;
   name: TUserName;
-  gender: 'male' | 'female' | 'other';
+  gender: "male" | "female" | "other";
   dateOfBirth?: string | null;
   email: string;
   contactNo: string;
   emergencyContactNo: string;
-  bloodGroups?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
+  bloodGroups?: "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-";
   presentAddress: string;
   permanentAddress: string;
   guardian: TGurdian;
   localGuardian: TlocalGurdian;
   profileImg?: string;
-  isActive: 'active' | 'blocked';
   isDeleted: boolean;
 };
 
