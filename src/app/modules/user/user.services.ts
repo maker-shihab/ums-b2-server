@@ -1,12 +1,14 @@
 import config from "../../config";
+import { AcademicSemester } from "../academicSemester/academicSemester.model";
 import { TStudent } from "../student/student.interface";
 import { Student } from "../student/student.model";
 import { TUser } from "./user.interface";
 import { User } from "./user.model";
+import { generateStudentId } from "./user.utils";
 
-const createStudentIntoDB = async (password: string, studentData: TStudent) => {
+const createStudentIntoDB = async (password: string, payload: TStudent) => {
   // Create user object
-  let userData: Partial<TUser> = {};
+  const userData: Partial<TUser> = {};
 
   // if password is not given, create default password
   userData.password = password || (config.default_password as string);
@@ -14,24 +16,31 @@ const createStudentIntoDB = async (password: string, studentData: TStudent) => {
   // Set Student role
   userData.role = "student";
 
-  // Set Manually user id
-  userData.id = "220422055";
+  // Find academic semester info
+  const academicSemesterInfo = await AcademicSemester.findById(
+    payload.admissionSemester,
+  );
+
+  // Set Geneerated id
+  userData.id = academicSemesterInfo
+    ? await generateStudentId(academicSemesterInfo)
+    : "";
+
+  // Assign generated id to payload
+  payload.id = userData.id;
 
   // Create a User
-  const result = await User.create(studentData);
+  const newUser = await User.create(payload);
 
   // Create student
   // Object.keys for creation array
-  if (Object.keys(result).length) {
-    studentData.id = result.id;
-    studentData.user = result._id;
-    const newStudent = await Student.create(studentData);
+  if (Object.keys(newUser).length) {
+    payload.id = newUser.id;
+    payload.user = newUser._id;
+
+    const newStudent = await Student.create(payload);
     return newStudent;
   }
-  // {
-  //     ...studentData,
-  //     userId: result.id,
-  //   }
 };
 
 export const UserService = {

@@ -7,12 +7,12 @@ const globalErrorhandler = (
   next: NextFunction,
 ) => {
   let statusCode = 500;
-  let message = err.message || "Something went wrong ⚠!";
+  let message = err;
 
   return res.status(statusCode).json({
     success: false,
     message,
-    error: err.message || message,
+    error: err,
   });
 };
 
