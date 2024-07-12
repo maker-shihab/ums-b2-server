@@ -1,6 +1,4 @@
-import bcrypt from "bcrypt";
 import { Schema, model } from "mongoose";
-import config from "../../config";
 import {
   StudentModel,
   TGurdian,
@@ -15,16 +13,6 @@ const userNameSchema = new Schema<TUserName>({
     required: [true, "First Name is required"],
     maxlength: 20,
     trrim: true,
-    // validate: {
-    //   validator: function (value: string): boolean {
-    //     const trimmedValue = value.trim();
-    //     const formattedValue =
-    //       trimmedValue.charAt(0).toUpperCase() +
-    //       trimmedValue.slice(1).toLowerCase();
-    //     return trimmedValue === formattedValue;
-    //   },
-    //   message: '{VALUE} is not a valid name',
-    // },
   },
   middleName: {
     type: String,
@@ -33,10 +21,6 @@ const userNameSchema = new Schema<TUserName>({
     type: String,
     required: [true, "Last Name is required"],
     maxlength: 20,
-    // validate: {
-    //   validator: (value: string) => validator.isAlpha(value.trim()),
-    //   message: '{VALUE} is not a valid name',
-    // },
   },
 });
 
@@ -101,11 +85,6 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       ref: "User",
       unique: true,
     },
-    password: {
-      type: String,
-      required: [true, "Password is required"],
-      maxlength: [20, "Password must be at least 20 characters"],
-    },
     name: {
       type: userNameSchema,
       required: [true, "Name is required"],
@@ -123,10 +102,6 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       type: String,
       required: [true, "Email is required"],
       unique: true,
-      // validate: {
-      //   validator: (value: string) => validator.isEmail(value.trim()),
-      //   message: '{VALUE} is not a valid email',
-      // },
     },
     contactNo: {
       type: String,
@@ -169,24 +144,6 @@ const studentSchema = new Schema<TStudent, StudentModel>(
   },
 );
 
-// Pre save middleware / hooks configuration
-studentSchema.pre("save", async function (next) {
-  const user = this;
-  user.password = await bcrypt.hash(
-    user.password,
-    Number(config.bcrypt_salt_round),
-  );
-  next();
-});
-
-// Post save middleware / hooks configuration
-studentSchema.post("save", function (doc, next) {
-  if (doc) {
-    doc.password = "";
-  }
-  next();
-});
-
 studentSchema.post("findOneAndUpdate", function (doc, next) {
   if (doc) {
     doc.password = "";
@@ -221,11 +178,6 @@ studentSchema.statics.isUserExists = async function (id: string) {
 studentSchema.virtual("fullName").get(function () {
   return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
 });
-// For creating instances
-// studentSchema.methods.isUserExists = async function (id: string) {
-//   const existingUser = await Student.findOne({ id });
-//   return existingUser;
-// };
 
 // Creating the model instance
 export const Student = model<TStudent, StudentModel>("Student", studentSchema);

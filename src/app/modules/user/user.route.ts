@@ -3,6 +3,6 @@ import { UserController } from "./user.controller";
 
 const router = express.Router();
 
-router.get("/create-student", UserController.createStudent);
+router.post("/create-student", UserController.createStudent);
 
 export const UserRouter = router;
