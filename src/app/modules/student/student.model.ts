@@ -137,6 +137,16 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       ref: "AcademicSemester",
       required: [true, "Admission Semester is required"],
     },
+    academicDepartment: {
+      type: Schema.Types.ObjectId,
+      ref: "AcademicDepartment",
+      required: [true, "Academic Department is required"],
+    },
+    academicFaculty: {
+      type: Schema.Types.ObjectId,
+      ref: "AcademicFaculty",
+      required: [true, "Academic Faculty is required"],
+    },
     isDeleted: {
       type: Boolean,
       default: false,
@@ -149,11 +159,9 @@ const studentSchema = new Schema<TStudent, StudentModel>(
   },
 );
 
-studentSchema.post("findOneAndUpdate", function (doc, next) {
-  if (doc) {
-    doc.password = "";
-  }
-  next();
+// Virtual
+studentSchema.virtual("fullName").get(function () {
+  return `${this?.name?.firstName} ${this?.name?.middleName} ${this?.name?.lastName}`;
 });
 
 // Query middleware
@@ -167,9 +175,15 @@ studentSchema.pre("findOne", function (next) {
   next();
 });
 
-// [$match: {isDeleted:: {$ne: true}}, {$match: {isDeleted: {$ne: true}}]
 studentSchema.pre("aggregate", function (next) {
   this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+  next();
+});
+
+studentSchema.post("findOneAndUpdate", function (doc, next) {
+  if (doc) {
+    doc.password = "";
+  }
   next();
 });
 
@@ -178,11 +192,6 @@ studentSchema.statics.isUserExists = async function (id: string) {
   const existingUser = await Student.findOne({ id });
   return existingUser;
 };
-
-// Virtual
-studentSchema.virtual("fullName").get(function () {
-  return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
-});
 
 // Creating the model instance
 export const Student = model<TStudent, StudentModel>("Student", studentSchema);

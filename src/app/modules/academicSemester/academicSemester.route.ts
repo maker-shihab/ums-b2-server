@@ -13,8 +13,14 @@ router.post(
 
 router.get("/", AcademicSemesterController.getAllAcademicSemesters);
 
-router.get("/:id", AcademicSemesterController.getSingleAcademicSemester);
+router.get(
+  "/:academicSemesterId",
+  AcademicSemesterController.getSingleAcademicSemester,
+);
 
-router.patch("/:id", AcademicSemesterController.updateAcademicSemesterIntoDb);
+router.patch(
+  "/:academicSemesterId",
+  AcademicSemesterController.updateAcademicSemesterIntoDb,
+);
 
 export const AcademicSemesterRoute = router;
