@@ -31,18 +31,19 @@ class QueryBuilder<T> {
     excludeFields.forEach(el => delete queryObject[el]);
 
     this.modelQuery = this.modelQuery.find(queryObject as FilterQuery<T>);
+
     return this;
   }
   sort() {
     const sort =
-      (this?.query?.sort as string).split(",").join(" ") || "-createdAt";
+      (this?.query?.sort as string)?.split(",")?.join(" ") || "-createdAt";
     this.modelQuery = this.modelQuery.sort(sort as string);
 
     return this;
   }
   paginate() {
-    const page = parseInt(this?.query?.page as string) || 1;
-    const limit = parseInt(this?.query?.limit as string) || 10;
+    const page = Number(this?.query?.page as string) || 1;
+    const limit = Number(this?.query?.limit as string) || 10;
     const skip = (page - 1) * limit;
 
     this.modelQuery = this.modelQuery.skip(skip).limit(limit);
@@ -51,9 +52,24 @@ class QueryBuilder<T> {
   }
   fields() {
     const fields =
-      (this?.query?.fields as string).split(",").join(" ") || "__v";
+      (this?.query?.fields as string)?.split(",")?.join(" ") || "-__v";
+
     this.modelQuery = this.modelQuery.select(fields);
     return this;
+  }
+  async countTotal() {
+    const totalQueries = this.modelQuery.getFilter();
+    const total = await this.modelQuery.model.countDocuments(totalQueries);
+    const page = Number(this?.query?.page) || 1;
+    const limit = Number(this?.query?.limit) || 10;
+    const totalPage = Math.ceil(total / limit);
+
+    return {
+      page,
+      limit,
+      total,
+      totalPage,
+    };
   }
 }
 
