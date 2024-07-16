@@ -7,7 +7,7 @@ import {
   TlocalGurdian,
 } from "./student.interface";
 
-const userNameSchema = new Schema<TUserName>({
+export const userNameSchema = new Schema<TUserName>({
   firstName: {
     type: String,
     required: [true, "First Name is required"],
@@ -71,6 +71,17 @@ const localGurdianSchema = new Schema<TlocalGurdian>({
   },
 });
 
+export const GenderSchema = ["male", "female", "other"];
+export const BloodGroupsSchema = [
+  "A+",
+  "A-",
+  "B+",
+  "B-",
+  "AB+",
+  "AB-",
+  "O+",
+  "O-",
+];
 // Creating Schema object
 const studentSchema = new Schema<TStudent, StudentModel>(
   {
@@ -91,7 +102,7 @@ const studentSchema = new Schema<TStudent, StudentModel>(
     },
     gender: {
       type: String,
-      enum: ["male", "female", "other"],
+      enum: GenderSchema,
       required: [
         true,
         "The gender field can only be one of the following: 'male', 'female', 'other'.",
@@ -113,7 +124,7 @@ const studentSchema = new Schema<TStudent, StudentModel>(
     },
     bloodGroups: {
       type: String,
-      enum: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
+      enum: BloodGroupsSchema,
     },
     presentAddress: {
       type: String,

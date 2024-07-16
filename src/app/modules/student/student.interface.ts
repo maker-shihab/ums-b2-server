@@ -22,17 +22,29 @@ export type TlocalGurdian = {
   address: string;
 };
 
+export type TBloadGroups =
+  | "A+"
+  | "A-"
+  | "B+"
+  | "B-"
+  | "AB+"
+  | "AB-"
+  | "O+"
+  | "O-";
+
+export type TGender = "male" | "female" | "other";
+
 // Student interface methods
 export type TStudent = {
   id: string;
   user: Types.ObjectId;
   name: TUserName;
-  gender: "male" | "female" | "other";
+  gender: TGender;
   dateOfBirth?: string | null;
   email: string;
   contactNo: string;
   emergencyContactNo: string;
-  bloodGroups?: "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-";
+  bloodGroups?: TBloadGroups;
   presentAddress: string;
   permanentAddress: string;
   guardian: TGurdian;
