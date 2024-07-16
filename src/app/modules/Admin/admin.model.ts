@@ -1,10 +1,25 @@
 import { model, Schema } from "mongoose";
-import {
-  BloodGroupsSchema,
-  GenderSchema,
-  userNameSchema,
-} from "../student/student.model";
-import { TAdmin } from "./admin.interface";
+import { BloodGroup, Gender } from "./admin.constant";
+import { AdminModel, TAdmin, TUserName } from "./admin.interface";
+
+const userNameSchema = new Schema<TUserName>({
+  firstName: {
+    type: String,
+    required: [true, "First Name is required"],
+    trim: true,
+    maxlength: [20, "Name can not be more than 20 characters"],
+  },
+  middleName: {
+    type: String,
+    trim: true,
+  },
+  lastName: {
+    type: String,
+    trim: true,
+    required: [true, "Last Name is required"],
+    maxlength: [20, "Name can not be more than 20 characters"],
+  },
+});
 
 const adminSchema = new Schema<TAdmin>(
   {
@@ -23,14 +38,18 @@ const adminSchema = new Schema<TAdmin>(
       type: userNameSchema,
       required: true,
     },
+    email: {
+      type: String,
+      required: true,
+    },
     gender: {
       type: String,
-      enum: GenderSchema,
+      enum: Gender,
       required: true,
     },
     bloodGroups: {
       type: String,
-      enum: BloodGroupsSchema,
+      enum: BloodGroup,
     },
     presentAddress: {
       type: String,
@@ -49,8 +68,40 @@ const adminSchema = new Schema<TAdmin>(
     },
   },
   {
-    timestamps: true,
+    toJSON: {
+      virtuals: true,
+    },
   },
 );
+// generating full name
+adminSchema.virtual("fullName").get(function () {
+  return (
+    this?.name?.firstName +
+    "" +
+    this?.name?.middleName +
+    "" +
+    this?.name?.lastName
+  );
+});
 
-export const Admin = model<TAdmin>("Admin", adminSchema);
+adminSchema.pre("find", function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+adminSchema.pre("findOne", function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+adminSchema.pre("aggregate", function (next) {
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+  next();
+});
+
+adminSchema.statics.isUserExists = async function (id: string) {
+  const existingUser = await Admin.findOne({ id });
+  return existingUser;
+};
+
+export const Admin = model<TAdmin, AdminModel>("Admin", adminSchema);
