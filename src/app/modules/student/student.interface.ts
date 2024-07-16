@@ -2,11 +2,11 @@ import { Model, Types } from "mongoose";
 
 export type TUserName = {
   firstName: string;
-  middleName?: string;
+  middleName: string;
   lastName: string;
 };
 
-export type TGurdian = {
+export type TGuardian = {
   fatherName: string;
   fatherOccupation: string;
   fatherContactNo: string;
@@ -15,40 +15,27 @@ export type TGurdian = {
   motherContactNo: string;
 };
 
-export type TlocalGurdian = {
+export type TLocalGuardian = {
   name: string;
   occupation: string;
   contactNo: string;
   address: string;
 };
 
-export type TBloadGroups =
-  | "A+"
-  | "A-"
-  | "B+"
-  | "B-"
-  | "AB+"
-  | "AB-"
-  | "O+"
-  | "O-";
-
-export type TGender = "male" | "female" | "other";
-
-// Student interface methods
 export type TStudent = {
   id: string;
   user: Types.ObjectId;
   name: TUserName;
-  gender: TGender;
-  dateOfBirth?: string | null;
+  gender: "male" | "female" | "other";
+  dateOfBirth?: Date;
   email: string;
   contactNo: string;
   emergencyContactNo: string;
-  bloodGroups?: TBloadGroups;
+  bloogGroup?: "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-";
   presentAddress: string;
   permanentAddress: string;
-  guardian: TGurdian;
-  localGuardian: TlocalGurdian;
+  guardian: TGuardian;
+  localGuardian: TLocalGuardian;
   profileImg?: string;
   admissionSemester: Types.ObjectId;
   academicDepartment: Types.ObjectId;
@@ -56,17 +43,7 @@ export type TStudent = {
   isDeleted: boolean;
 };
 
-// For creating static methods
+//for creating static
 export interface StudentModel extends Model<TStudent> {
   isUserExists(id: string): Promise<TStudent | null>;
 }
-
-// export type StudentMethods = {
-//   isUserExists(id: string): Promise<TStudent | null>;
-// };
-
-// export type StudentModel = Model<
-//   TStudent,
-//   Record<string, never>,
-//   StudentMethods
-// >;

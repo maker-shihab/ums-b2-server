@@ -1,5 +1,4 @@
 import { Model, Types } from "mongoose";
-import { TBloadGroups } from "../student/student.interface";
 
 export type TGender = "male" | "female" | "other";
 export type TBloodGroup =
@@ -24,14 +23,14 @@ export type TAdmin = {
   designation: string;
   name: TUserName;
   gender: TGender;
-  dateOfBirth?: string | null;
+  dateOfBirth?: Date;
   email: string;
   contactNo: string;
   emergencyContactNo: string;
-  bloodGroups?: TBloadGroups;
+  bloogGroup?: TBloodGroup;
   presentAddress: string;
   permanentAddress: string;
-  profileImage?: string;
+  profileImg?: string;
   isDeleted: boolean;
 };
 

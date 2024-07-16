@@ -1,7 +1,8 @@
 import bcrypt from "bcrypt";
 import { model, Schema } from "mongoose";
 import config from "../../config";
-import { TUser } from "./user.interface";
+import { TUser, UserModel } from "./user.interface";
+
 const userSchema = new Schema<TUser>(
   {
     id: {
@@ -61,4 +62,4 @@ userSchema.post("save", function (doc, next) {
   next();
 });
 
-export const User = model<TUser>("user", userSchema);
+export const User = model<TUser, UserModel>("user", userSchema);

@@ -1,10 +1,10 @@
 import express from "express";
-import { AcademicDepartmentRouter } from "../modules/academicDepartment/academicDepartment.route";
-import { AcademicFacultyRouter } from "../modules/academicFaculty/academicFaculty.route";
-import { AcademicSemesterRoute } from "../modules/academicSemester/academicSemester.route";
+import { AcademicDepartmentRouter } from "../modules/AcademicDepartment/academicDepartment.route";
+import { AcademicFacultyRouter } from "../modules/AcademicFaculty/academicFaculty.route";
+import { AcademicSemesterRoute } from "../modules/AcademicSemester/academicSemester.route";
 import { FacultyRouter } from "../modules/Faculty/faculty.route";
-import { StudentRouter } from "../modules/student/student.route";
-import { UserRouter } from "../modules/user/user.route";
+import { StudentRouter } from "../modules/Student/student.route";
+import { UserRouter } from "../modules/User/user.route";
 
 const router = express.Router();
 

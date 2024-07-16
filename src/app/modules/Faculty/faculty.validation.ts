@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { BloodGroupsSchema, GenderSchema } from "../student/student.model";
+import { BloodGroup, Gender } from "./faculty.constant";
 
 const createUserNameValidationSchema = z.object({
   firstName: z
@@ -19,12 +19,12 @@ export const createFacultyValidationSchema = z.object({
     faculty: z.object({
       designation: z.string(),
       name: createUserNameValidationSchema,
-      gender: z.enum([...GenderSchema] as [string, ...string[]]),
+      gender: z.enum([...Gender] as [string, ...string[]]),
       dateOfBirth: z.string().optional(),
       email: z.string().email(),
       contactNo: z.string(),
       emergencyContactNo: z.string(),
-      bloogGroup: z.enum([...BloodGroupsSchema] as [string, ...string[]]),
+      bloogGroup: z.enum([...BloodGroup] as [string, ...string[]]),
       presentAddress: z.string(),
       permanentAddress: z.string(),
       academicDepartment: z.string(),
@@ -43,14 +43,12 @@ export const updateFacultyValidationSchema = z.object({
     faculty: z.object({
       designation: z.string().optional(),
       name: updateUserNameValidationSchema,
-      gender: z.enum([...GenderSchema] as [string, ...string[]]).optional(),
+      gender: z.enum([...Gender] as [string, ...string[]]).optional(),
       dateOfBirth: z.string().optional(),
       email: z.string().email().optional(),
       contactNo: z.string().optional(),
       emergencyContactNo: z.string().optional(),
-      bloogGroup: z
-        .enum([...BloodGroupsSchema] as [string, ...string[]])
-        .optional(),
+      bloogGroup: z.enum([...BloodGroup] as [string, ...string[]]).optional(),
       presentAddress: z.string().optional(),
       permanentAddress: z.string().optional(),
       academicDepartment: z.string().optional(),
