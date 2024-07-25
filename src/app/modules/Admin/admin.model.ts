@@ -21,47 +21,62 @@ const userNameSchema = new Schema<TUserName>({
   },
 });
 
-const adminSchema = new Schema<TAdmin>(
+const adminSchema = new Schema<TAdmin, AdminModel>(
   {
     id: {
       type: String,
-      required: true,
+      required: [true, "ID is required"],
       unique: true,
     },
     user: {
       type: Schema.Types.ObjectId,
-      required: true,
-      ref: "User",
+      required: [true, "User id is required"],
       unique: true,
+      ref: "User",
+    },
+    designation: {
+      type: String,
+      required: [true, "Designation is required"],
     },
     name: {
       type: userNameSchema,
-      required: true,
-    },
-    email: {
-      type: String,
-      required: true,
+      required: [true, "Name is required"],
     },
     gender: {
       type: String,
-      enum: Gender,
-      required: true,
+      enum: {
+        values: Gender,
+        message: "{VALUE} is not a valid gender",
+      },
+      required: [true, "Gender is required"],
     },
-    bloodGroups: {
+    dateOfBirth: { type: Date },
+    email: {
       type: String,
-      enum: BloodGroup,
+      required: [true, "Email is required"],
+      unique: true,
+    },
+    contactNo: { type: String, required: [true, "Contact number is required"] },
+    emergencyContactNo: {
+      type: String,
+      required: [true, "Emergency contact number is required"],
+    },
+    bloogGroup: {
+      type: String,
+      enum: {
+        values: BloodGroup,
+        message: "{VALUE} is not a valid blood group",
+      },
     },
     presentAddress: {
       type: String,
-      required: [true, "Present Address is not available"],
+      required: [true, "Present address is required"],
     },
     permanentAddress: {
       type: String,
-      required: [true, "Permanent Address is available"],
+      required: [true, "Permanent address is required"],
     },
-    profileImage: {
-      type: String,
-    },
+    profileImg: { type: String, default: "" },
     isDeleted: {
       type: Boolean,
       default: false,
@@ -73,6 +88,7 @@ const adminSchema = new Schema<TAdmin>(
     },
   },
 );
+
 // generating full name
 adminSchema.virtual("fullName").get(function () {
   return (
