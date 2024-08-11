@@ -3,7 +3,7 @@ import { model, Schema } from "mongoose";
 import config from "../../config";
 import { TUser, UserModel } from "./user.interface";
 
-const userSchema = new Schema<TUser>(
+const userSchema = new Schema<TUser, UserModel>(
   {
     id: {
       type: String,
@@ -19,6 +19,7 @@ const userSchema = new Schema<TUser>(
       type: String,
       required: [true, "Password is required"],
       maxlength: [20, "Password must be at least 20 characters"],
+      select: 0,
     },
     needsPasswordChange: {
       type: Boolean,
@@ -61,5 +62,16 @@ userSchema.post("save", function (doc, next) {
   }
   next();
 });
+
+userSchema.statics.isUserExistsByCustomId = async function (id: string) {
+  return await User.findOne({ id }).select("+password");
+};
+
+userSchema.statics.isPasswordMatched = async function (
+  plainTextPassword: string,
+  hashedPassword: string,
+) {
+  return await bcrypt.compare(plainTextPassword, hashedPassword);
+};
 
 export const User = model<TUser, UserModel>("user", userSchema);

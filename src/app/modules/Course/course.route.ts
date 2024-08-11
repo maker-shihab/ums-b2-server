@@ -6,7 +6,7 @@ import { CourseValidationSchema } from "./course.validation";
 const router = express.Router();
 
 router.post(
-  "/",
+  "/create-course",
   validateRequest(CourseValidationSchema.createCourseValidationSchema),
   CourseController.createCourse,
 );
@@ -20,7 +20,18 @@ router.patch(
   validateRequest(CourseValidationSchema.updateCreateCourseValidationSchema),
   CourseController.updateCourse,
 );
-
 router.delete("/:id", CourseController.deleteCourse);
+
+router.put(
+  "/:id/assign-faculties",
+  validateRequest(CourseValidationSchema.facultiesWithCourseValidationSchema),
+  CourseController.assignFaculties,
+);
+
+router.delete(
+  "/:id/remove-faculties",
+  validateRequest(CourseValidationSchema.facultiesWithCourseValidationSchema),
+  CourseController.removeFromFaculties,
+);
 
 export const CourseRouter = router;
